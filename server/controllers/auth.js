@@ -25,6 +25,14 @@ export const register = async (req, res) => {
             password: hash,
         });
 
+        const token = jwt.sign(
+            {
+                id: newUser._id,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "30d" }
+        );
+
         await newUser.save(); // записываем юзера в базу данных
 
         // отправка ответа клиенту
@@ -77,5 +85,27 @@ export const login = async (req, res) => {
 // Get me
 export const getMe = async (req, res) => {
     try {
-    } catch (error) {}
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.json({
+                message: "There is no such user.",
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "30d" }
+        );
+
+        res.json({
+            user,
+            token,
+        });
+    } catch (error) {
+        res.json({ message: "No access." });
+    }
 };
