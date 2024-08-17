@@ -20,6 +20,8 @@ export const registerUser = createAsyncThunk(
             if (data.token) {
                 window.localStorage.setItem("token", data.token);
             }
+
+            return data;
         } catch (error) {
             console.log(error);
         }
@@ -31,16 +33,19 @@ export const authSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: {
+        // запрос отправляется
         [registerUser.pending]: (state) => {
             state.isLoading = true;
             state.status = null;
         },
+        // запрос выполнен
         [registerUser.fulfilled]: (state, action) => {
             state.isLoading = false;
             state.status = action.payload.message;
             state.user = action.payload.user;
             state.token = action.payload.token;
         },
+        // возникла ошибка
         [registerUser.rejected]: (state, action) => {
             state.status = action.payload.message;
             state.isLoading = false;
