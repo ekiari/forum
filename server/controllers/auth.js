@@ -38,6 +38,7 @@ export const register = async (req, res) => {
         // отправка ответа клиенту
         res.json({
             newUser,
+            token,
             message: "Register was successfully!",
         });
     } catch (error) {

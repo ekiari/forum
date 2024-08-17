@@ -32,25 +32,46 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {},
-    extraReducers: {
+    extraReducers: (builder) => {
         // запрос отправляется
-        [registerUser.pending]: (state) => {
+        builder.addCase(registerUser.pending, (state) => {
             state.isLoading = true;
             state.status = null;
-        },
+        });
+
         // запрос выполнен
-        [registerUser.fulfilled]: (state, action) => {
+        builder.addCase(registerUser.fulfilled, (state, action) => {
             state.isLoading = false;
             state.status = action.payload.message;
             state.user = action.payload.user;
             state.token = action.payload.token;
-        },
+        });
+
         // возникла ошибка
-        [registerUser.rejected]: (state, action) => {
-            state.status = action.payload.message;
+        builder.addCase(registerUser.rejected, (state, action) => {
             state.isLoading = false;
-        },
+            state.status = action.payload.message;
+        });
     },
 });
 
 export default authSlice.reducer;
+
+// extraReducers: {
+//     // запрос отправляется
+//     [registerUser.pending]: (state) => {
+//         state.isLoading = true;
+//         state.status = null;
+//     },
+//     // запрос выполнен
+//     [registerUser.fulfilled]: (state, action) => {
+//         state.isLoading = false;
+//         state.status = action.payload.message;
+//         state.user = action.payload.user;
+//         state.token = action.payload.token;
+//     },
+//     // возникла ошибка
+//     [registerUser.rejected]: (state, action) => {
+// state.status = action.payload.message;
+// state.isLoading = false;
+//     },
