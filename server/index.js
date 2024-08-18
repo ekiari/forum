@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors"; // нужен для того, чтобы дать разрешение с разных ip
 
 import authRoute from "./routes/auth.js";
+import postRoute from "./routes/posts.js";
 
 const app = express();
 dotenv.config(); // позволяет создать конфиг с данными, которые не будут видны на сервере. дает большую защиту приложению
@@ -20,6 +21,7 @@ app.use(express.json()); // express будет понимать, что данн
 
 // Routes
 app.use("/api/auth", authRoute); // регестрируем все роуты по адресу /api/auth
+app.use("/api/posts", postRoute); // регестрируем все роуты по адресу /api/post
 
 async function start() {
     try {
