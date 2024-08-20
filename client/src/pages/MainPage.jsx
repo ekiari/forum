@@ -27,11 +27,6 @@ export const MainPage = () => {
                     {posts?.map((post, idx) => (
                         <PostItem key={idx} post={post} />
                     ))}
-
-                    {/* <PostItem />
-                    <PostItem />
-                    <PostItem />
-                    <PostItem /> */}
                 </div>
                 <div className="basis-1/5">
                     <div className="text-40 uppercase text-white">Popular:</div>
