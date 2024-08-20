@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 export const createPost = async (req, res) => {
     try {
         const { title, text } = req.body;
-        const user = await User.findById("req.userId");
+        const user = await User.findById(req.userId);
 
         // with image
         if (req.files) {
