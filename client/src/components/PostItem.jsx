@@ -1,5 +1,6 @@
 import React from "react";
 import { AiFillEye, AiOutlineMessage } from "react-icons/ai";
+import Moment from "react-moment";
 
 export const PostItem = ({ post }) => {
     if (!post) {
@@ -18,7 +19,7 @@ export const PostItem = ({ post }) => {
                     {post.username}
                 </div>
                 <div className="text-xs text-white opacity-50">
-                    {post.createdAt}
+                    <Moment date={post.createdAt} format="D MMM YYYY" />
                 </div>
             </div>
             <div className="text-white text-xl">{post.title}</div>
