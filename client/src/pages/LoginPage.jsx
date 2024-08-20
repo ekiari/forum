@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { checkIsAuth, loginUser } from "../redux/features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ export const LoginPage = () => {
         if (isAuth) {
             navigate("/");
         }
-    }, [status]);
+    });
 
     const handleSubmit = () => {
         try {
