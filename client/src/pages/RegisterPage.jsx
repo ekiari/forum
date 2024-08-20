@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/features/Auth/authSlice";
+import { registerUser, checkIsAuth } from "../redux/features/Auth/authSlice";
 import { toast } from "react-toastify";
 
 export const RegisterPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
     const { status } = useSelector((state) => state.auth);
+    const isAuth = useSelector(checkIsAuth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (status) {
             toast(status);
         }
-    }, status);
+        if (isAuth) {
+            navigate("/");
+        }
+    }, [status, isAuth, navigate]);
 
-    const handleSubmin = () => {
+    const handleSubmit = () => {
         try {
             dispatch(registerUser({ username, password }));
             setUsername("");
@@ -56,8 +62,8 @@ export const RegisterPage = () => {
 
             <div className="flex gap-8 justify-center mt-4">
                 <button
-                    type="sumbit"
-                    onClick={handleSubmin}
+                    type="submit"
+                    onClick={handleSubmit}
                     className="flex justify-center item-scenter text-60 bg-gray-600 text-white rounded-sm py-2 px-4"
                 >
                     Sign Up

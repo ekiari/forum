@@ -28,17 +28,53 @@ export const registerUser = createAsyncThunk(
     }
 );
 
+export const loginUser = createAsyncThunk(
+    "auth/loginUser",
+    async ({ username, password }) => {
+        try {
+            const { data } = await axios.post("/auth/login", {
+                username,
+                password,
+            });
+
+            if (data.token) {
+                window.localStorage.setItem("token", data.token);
+            }
+
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+);
+
+export const getMe = createAsyncThunk("auth/getMe", async () => {
+    try {
+        const { data } = await axios.get("/auth/me");
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 export const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        logout: (state) => {
+            state.user = null;
+            state.token = null;
+            state.isLoading = false;
+            state.status = null;
+        },
+    },
     extraReducers: (builder) => {
+        // register user
         // запрос отправляется
         builder.addCase(registerUser.pending, (state) => {
             state.isLoading = true;
             state.status = null;
         });
-
         // запрос выполнен
         builder.addCase(registerUser.fulfilled, (state, action) => {
             state.isLoading = false;
@@ -46,32 +82,52 @@ export const authSlice = createSlice({
             state.user = action.payload.user;
             state.token = action.payload.token;
         });
-
         // возникла ошибка
         builder.addCase(registerUser.rejected, (state, action) => {
+            state.isLoading = false;
+            state.status = action.payload.message;
+        });
+
+        // login user
+        // запрос отправляется
+        builder.addCase(loginUser.pending, (state) => {
+            state.isLoading = true;
+            state.status = null;
+        });
+        // запрос выполнен
+        builder.addCase(loginUser.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.status = action.payload.message;
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+        });
+        // возникла ошибка
+        builder.addCase(loginUser.rejected, (state, action) => {
+            state.isLoading = false;
+            state.status = action.payload.message;
+        });
+
+        // get me
+        // проверка авторизации
+        builder.addCase(getMe.pending, (state) => {
+            state.isLoading = true;
+            state.status = null;
+        });
+        // запрос выполнен
+        builder.addCase(getMe.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.status = null;
+            state.user = action.payload?.user;
+            state.token = action.payload?.token;
+        });
+        // возникла ошибка
+        builder.addCase(getMe.rejected, (state, action) => {
             state.isLoading = false;
             state.status = action.payload.message;
         });
     },
 });
 
+export const checkIsAuth = (state) => Boolean(state.auth.token);
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
-
-// extraReducers: {
-//     // запрос отправляется
-//     [registerUser.pending]: (state) => {
-//         state.isLoading = true;
-//         state.status = null;
-//     },
-//     // запрос выполнен
-//     [registerUser.fulfilled]: (state, action) => {
-//         state.isLoading = false;
-//         state.status = action.payload.message;
-//         state.user = action.payload.user;
-//         state.token = action.payload.token;
-//     },
-//     // возникла ошибка
-//     [registerUser.rejected]: (state, action) => {
-// state.status = action.payload.message;
-// state.isLoading = false;
-//     },
