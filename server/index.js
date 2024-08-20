@@ -2,6 +2,7 @@ import express, { request } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors"; // нужен для того, чтобы дать разрешение с разных ip
+import fileUpload from "express-fileupload";
 
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
@@ -17,7 +18,9 @@ const DB_NAME = process.env.DB_NAME; // too
 
 // Middleware
 app.use(cors()); // позволяет отправлять запросы к backend'у с разных IP
+app.use(fileUpload());
 app.use(express.json()); // express будет понимать, что данные приходят в json
+app.use(express.static("uploads"));
 
 // Routes
 app.use("/api/auth", authRoute); // регестрируем все роуты по адресу /api/auth
