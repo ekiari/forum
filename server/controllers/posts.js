@@ -92,3 +92,22 @@ export const getMyPosts = async (req, res) => {
         res.json({ message: "Something went wrong!" });
     }
 };
+
+// Remove post
+export const removePost = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndDelete(req.params.id);
+
+        if (!post) {
+            return res.json({ message: "There is no such post!" });
+        }
+
+        await User.findByIdAndUpdate(req.userId, {
+            $pull: { posts: req.params.id },
+        });
+
+        res.json({ message: "Post was removed" });
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
