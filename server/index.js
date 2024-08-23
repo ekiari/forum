@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload";
 
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
+import commentRoute from "./routes/comments.js";
 
 const app = express();
 dotenv.config(); // позволяет создать конфиг с данными, которые не будут видны на сервере. дает большую защиту приложению
@@ -25,6 +26,7 @@ app.use(express.static("uploads"));
 // Routes
 app.use("/api/auth", authRoute); // регестрируем все роуты по адресу /api/auth
 app.use("/api/posts", postRoute); // регестрируем все роуты по адресу /api/post
+app.use("/api/comments", commentRoute);
 
 async function start() {
     try {

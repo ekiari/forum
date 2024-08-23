@@ -11,9 +11,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removePost } from "../redux/features/post/postSlice";
 import { toast } from "react-toastify";
+import { createComment } from "../redux/features/comment/commentSlice";
 
 export const PostPage = () => {
     const [post, setPost] = useState(null);
+    const [comment, setComment] = useState(null);
 
     const { user } = useSelector((state) => state.auth);
     const params = useParams();
@@ -30,9 +32,18 @@ export const PostPage = () => {
         }
     };
 
+    const handleSubmit = () => {
+        try {
+            const postId = params.is;
+            dispatch(createComment({ postId, comment }));
+            setComment("");
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const fetchPost = useCallback(async () => {
         const { data } = await axios.get(`/posts/${params.id}`);
-        console.log(data);
         setPost(data);
     }, [params.id]);
 
@@ -95,7 +106,9 @@ export const PostPage = () => {
                         {user?._id === post.author && (
                             <div className="flex gap-3 mt-4">
                                 <button className="flex items-center justify-center gap-2 text-white opacity-50">
-                                    <AiTwotoneEdit />
+                                    <Link to={`/${params.id}/edit`}>
+                                        <AiTwotoneEdit />
+                                    </Link>
                                 </button>
                                 <button
                                     onClick={removePostHandler}
@@ -107,7 +120,27 @@ export const PostPage = () => {
                         )}
                     </div>
                 </div>
-                <div className="w-1/3">COMMENTS</div>
+                <div className="w-1/3 p-8 bg-gray-700 flex flex-col gap-2 rounded-sm">
+                    <form
+                        className="flex gap-2"
+                        onSubmit={(e) => e.preventDefault()}
+                    >
+                        <input
+                            type="text"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Comment"
+                            className="text-black w-full rounded-sm bg-gray-400 border p-2 text-xs outline-none placeholder:text-gray-700"
+                        />
+                        <button
+                            type="submit"
+                            onClick={handleSubmit}
+                            className="flex justify-center items-center bg-gray-600 text-xs text-white rounded-sm py-2 px-4"
+                        >
+                            Send
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
