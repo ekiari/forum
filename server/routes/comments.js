@@ -4,7 +4,8 @@ import { createComment } from "../controllers/comments.js";
 
 const router = new Router();
 
-// Create comment
+// Create Comment
+// http://localhost:3002/api/comments/:id
 router.post("/:id", checkAuth, createComment);
 
 export default router;

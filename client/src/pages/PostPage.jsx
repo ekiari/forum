@@ -11,13 +11,18 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removePost } from "../redux/features/post/postSlice";
 import { toast } from "react-toastify";
-import { createComment } from "../redux/features/comment/commentSlice";
+import {
+    createComment,
+    getPostComments,
+} from "../redux/features/comment/commentSlice";
+import { CommentItem } from "../components/CommentItem";
 
 export const PostPage = () => {
     const [post, setPost] = useState(null);
     const [comment, setComment] = useState(null);
 
     const { user } = useSelector((state) => state.auth);
+    const { comments } = useSelector((state) => state.comment);
     const params = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -42,6 +47,14 @@ export const PostPage = () => {
         }
     };
 
+    const fetchComments = useCallback(async () => {
+        try {
+            dispatch(getPostComments(params.id));
+        } catch (error) {
+            console.log(error);
+        }
+    }, [params.id, dispatch]);
+
     const fetchPost = useCallback(async () => {
         const { data } = await axios.get(`/posts/${params.id}`);
         setPost(data);
@@ -50,6 +63,10 @@ export const PostPage = () => {
     useEffect(() => {
         fetchPost();
     }, [fetchPost]);
+
+    useEffect(() => {
+        fetchComments();
+    }, [fetchComments]);
 
     if (!post) {
         return (
@@ -140,6 +157,10 @@ export const PostPage = () => {
                             Send
                         </button>
                     </form>
+
+                    {comments?.map((cmt) => (
+                        <CommentItem key={cmt._id} cmt={cmt} />
+                    ))}
                 </div>
             </div>
         </div>

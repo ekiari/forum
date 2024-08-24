@@ -1,4 +1,4 @@
-import express, { request } from "express";
+import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors"; // нужен для того, чтобы дать разрешение с разных ip

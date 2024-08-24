@@ -146,6 +146,8 @@ export const getPostComments = async (req, res) => {
                 return Comment.findById(comment);
             })
         );
+
+        res.json(list);
     } catch (error) {
         res.json({ message: "Something went wrong!" });
     }
