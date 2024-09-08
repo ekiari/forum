@@ -39,7 +39,7 @@ export const PostPage = () => {
 
     const handleSubmit = () => {
         try {
-            const postId = params.is;
+            const postId = params.id;
             dispatch(createComment({ postId, comment }));
             setComment("");
         } catch (error) {
