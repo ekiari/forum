@@ -11,7 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getMe } from "./redux/features/Auth/authSlice.js";
+import { getMe } from "./redux/features/auth/authSlice.js";
 
 function App() {
     const dispatch = useDispatch();
@@ -38,4 +38,3 @@ function App() {
 }
 
 export default App;
-//asd

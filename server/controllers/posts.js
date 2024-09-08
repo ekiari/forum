@@ -63,3 +63,92 @@ export const getAll = async (req, res) => {
         res.json({ message: "Something went wrong!" });
     }
 };
+
+// Get All Posts
+export const getById = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate(req.params.id, {
+            $inc: { views: 1 },
+        });
+
+        res.json(post);
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
+
+// Get all my posts
+export const getMyPosts = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        const list = await Promise.all(
+            user.posts.map((post) => {
+                return Post.findById(post._id);
+            })
+        );
+
+        res.json(list);
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
+
+// Remove post
+export const removePost = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndDelete(req.params.id);
+
+        if (!post) {
+            return res.json({ message: "There is no such post!" });
+        }
+
+        await User.findByIdAndUpdate(req.userId, {
+            $pull: { posts: req.params.id },
+        });
+
+        res.json({ message: "Post was removed" });
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
+
+// Update post
+export const updatePost = async (req, res) => {
+    try {
+        const { title, text, id } = req.body;
+        const post = await Post.findById(id);
+
+        if (req.files) {
+            let fileName = Date.now().toString() + req.files.image.name;
+            const __dirname = dirname(fileURLToPath(import.meta.url));
+            req.files.image.mv(path.join(__dirname, "..", "uploads", fileName));
+            post.imgUrl = fileName || "";
+        }
+
+        post.title = title;
+        post.text = text;
+
+        await post.save();
+
+        res.json(post);
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
+
+// Get post comments
+export const getPostComments = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        const list = await Promise.all(
+            post.comments.map((comment) => {
+                return Comment.findById(comment);
+            })
+        );
+
+        res.json(list);
+    } catch (error) {
+        res.json({ message: "Something went wrong!" });
+    }
+};
